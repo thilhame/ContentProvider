@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">ContenteProvider</string>
+    <string name="note_text_remove">remover</string>
+    <string name="note_title_hint">note_title_hint</string>
+    <string name="note_description">descrição</string>
+    <string name="note_description_hint">note_description_hint</string>
+</resources>

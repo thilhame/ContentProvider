@@ -1,0 +1,52 @@
+package com.example.contenteprovider
+
+import android.database.Cursor
+import android.util.EventLogTags
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
+import android.widget.TextView
+import androidx.appcompat.view.menu.ActionMenuItemView
+import androidx.recyclerview.widget.RecyclerView
+import com.example.contenteprovider.database.NotesDatabaseHelper.Companion.DESCRIPTION_NOTES
+import com.example.contenteprovider.database.NotesDatabaseHelper.Companion.TITLE_NOTES
+
+class NotesAdapter (private val listener: NoteClickedListener): RecyclerView.Adapter<NotesAdapter.NotesViewHolder>() {
+
+    private var mCursor: Cursor? = null
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): NotesViewHolder =
+        NotesViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.note_item,parent,false))
+
+    override fun getItemCount(): Int = if (mCursor != null) mCursor?.count as Int else 0
+
+
+    override fun onBindViewHolder(holder: NotesViewHolder, position: Int) {
+        mCursor?.moveToPosition(position)
+
+        holder.noteTitle.text = mCursor?.getString(mCursor?.getColumnIndex(TITLE_NOTES) as Int)
+        holder.noteDescriptor.text = mCursor?.getString(mCursor?.getColumnIndex(DESCRIPTION_NOTES) as Int)
+        holder.noteButtonRemove.setOnClickListener{
+            mCursor?.moveToPosition(position)
+            listener.noteRemoveItem(mCursor)
+            notifyDataSetChanged()
+        }
+
+        holder.itemView.setOnClickListener{listener.noteClickedItem(mCursor as Cursor)}
+    }
+
+
+
+fun  SetCursor(newCursor: Cursor?){
+    mCursor = newCursor
+    notifyDataSetChanged()
+}
+
+    class NotesViewHolder(itemView:View) : RecyclerView.ViewHolder(itemView) {
+        val noteTitle = itemView.findViewById(R.id.note_title) as TextView
+        val noteDescriptor = itemView.findViewById(R.id.note_description) as TextView
+        val noteButtonRemove = itemView.findViewById(R.id.note_button_remove) as Button
+
+    }
+}
